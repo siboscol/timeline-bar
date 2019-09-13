@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
@@ -13,6 +13,7 @@ const useStyles = makeStyles({
   }
 });
 
+// Helpers
 const day = 1000 * 60 * 60 * 24;
 
 const formatTick = ms => {
@@ -32,29 +33,37 @@ const buildMarks = dateTicks => {
   });
 };
 
-const Timeline = (props) => {
-  const { minDate, maxDate, selectedDates, onChangeDates } = props;
-  const classes = useStyles();
+const getValuesDates = dates => {
+  return [dates[0].getTime(), dates[1].getTime()];
+}
 
-  const preSelectedDates = [selectedDates[0].getTime(), selectedDates[1].getTime()];
-  const [value, setValue] = useState(preSelectedDates);
-  const [min, setMin] = useState(minDate.getTime());
-  const [max, setMax] = useState(maxDate.getTime());
+const Timeline = (props) => {
+  const classes = useStyles();
+  const { minDate, maxDate, selectedDates, onChangeDates } = props;
+  const preSelectedDates = getValuesDates(selectedDates);
+  const [values, setValues] = useState(preSelectedDates);
 
   const dateTicks = scaleTime()
-    .domain([min, max])
-    .ticks(8)
+    .domain([minDate, maxDate])
+    .ticks(12)
     .map(d => +d);
+
+  // Sync timeline values if dates selected change
+  useEffect(() => {
+    const dates = getValuesDates(props.selectedDates);
+    setValues(dates);
+  }, [props])
 
   const marks = buildMarks(dateTicks);
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
   const handleChangeCommitted = (event, newValues) => {
-    const newDates = [formatDate(newValues[0]), formatDate(newValues[1])];
+    setValues(newValues);
+    const newDates = [new Date(newValues[0]), new Date(newValues[1])];
     onChangeDates(newDates);
+  }
+
+  const handleChangeDates = (event, newValues) => {
+    setValues(newValues);
   }
 
   return (
@@ -63,15 +72,15 @@ const Timeline = (props) => {
         Timeline
       </Typography>
       <Slider
-        value={value}
-        onChange={handleChange}
+        value={values}
+        onChange={handleChangeDates}
         onChangeCommitted={handleChangeCommitted}
         valueLabelDisplay="on"
         aria-labelledby="range-slider"
         getAriaValueText={formatDate}
         step={day}
-        max={max}
-        min={min}
+        max={maxDate.getTime()}
+        min={minDate.getTime()}
         marks={marks}
         ValueLabelComponent={ArrowTooltip}
       />

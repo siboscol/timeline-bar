@@ -2,13 +2,8 @@ import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import { subDays, startOfToday, format } from 'date-fns';
-import Timeline from './components';
-import {
-  DateRangePicker,
-  DateRange
-} from '@matharumanpreet00/react-daterange-picker';
-import TextField from '@material-ui/core/TextField';
+import { subDays, addDays, startOfToday, format } from 'date-fns';
+import { Timeline, DatesPicker } from './components';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -21,11 +16,6 @@ const useStyles = makeStyles(theme => ({
   bar: {
     top: 'auto',
     bottom: 0
-  },
-  calendar: {
-    position: 'absolute',
-    bottom: 100,
-    right: 0
   }
 }));
 
@@ -41,60 +31,41 @@ const formatDate = date => {
 
 const TimeLineBar = props => {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
-  const [dateRange, setDateRange] = useState({});
-  const [startDate, setStartDate] = useState(formatDate(fourDaysAgo));
-  const [endDate, setEndDate] = useState(formatDate(today));
-  const [selectedDates, setSelectedDates] = useState([fourDaysAgo, today])
+  const [selectedDates, setSelectedDates] = useState([oneWeekAgo, today]);
+  const [startDate, setStartDate] = useState(oneYearAgo);
+  const [endDate, setEndDate] = useState(today);
 
   const handleDatesChanged = dates => {
-    console.log('Dates changed', dates);
+    console.log('Timeline changed', dates);
+    setSelectedDates(dates)
   };
 
-  const handleCalendarChange = range => {
-    setOpen(!open);
-    setDateRange(range);
-    setStartDate(formatDate(range.startDate));
-    setEndDate(formatDate(range.endDate));
-    setSelectedDates([range.startDate, range.endDate]);
+  const handleCalendarChange = dates => {
+    console.log('Calendar changed', dates);
+    const [ calStartDate, calEndDate ] = dates;
+    if (calEndDate >= endDate) {
+        setEndDate(addDays(calEndDate, 30));
+    }
+    if (calStartDate <= startDate) {
+        setStartDate(subDays(calStartDate, 30));
+    }
+    setSelectedDates(dates);
   };
-
-  console.log('dateRange', dateRange);
-  console.log('formated date', startDate);
 
   return (
     <div className={classes.root}>
       <AppBar color="default" position="fixed" className={classes.bar}>
         <Toolbar>
           <Timeline
-            minDate={oneYearAgo}
-            maxDate={today}
+            minDate={startDate}
+            maxDate={endDate}
             selectedDates={selectedDates}
             onChangeDates={handleDatesChanged}
           />
-          <TextField
-            id="startDate"
-            label="Start Date"
-            type="date"
-            value={startDate}
-            InputLabelProps={{
-              shrink: true
-            }}
-            onClick={() => setOpen(!open)}
+          <DatesPicker
+            selectedDates={selectedDates}
+            onChangeDates={handleCalendarChange}
           />
-          <TextField
-            id="endDate"
-            label="End Date"
-            type="date"
-            value={endDate}
-            InputLabelProps={{
-              shrink: true
-            }}
-            onClick={() => setOpen(!open)}
-          />
-          <div className={classes.calendar}>
-            <DateRangePicker open={open} onChange={handleCalendarChange} />
-          </div>
         </Toolbar>
       </AppBar>
     </div>
