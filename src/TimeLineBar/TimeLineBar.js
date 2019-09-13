@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -31,13 +31,20 @@ const formatDate = date => {
 
 const TimeLineBar = props => {
   const classes = useStyles();
+  const { onChangeDates } = props;
   const [selectedDates, setSelectedDates] = useState([oneWeekAgo, today]);
   const [startDate, setStartDate] = useState(oneYearAgo);
   const [endDate, setEndDate] = useState(today);
 
+  useEffect(() => {
+    onChangeDates(selectedDates);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleDatesChanged = dates => {
     console.log('Timeline changed', dates);
     setSelectedDates(dates)
+    onChangeDates(dates);
   };
 
   const handleCalendarChange = dates => {
@@ -50,6 +57,7 @@ const TimeLineBar = props => {
         setStartDate(subDays(calStartDate, 30));
     }
     setSelectedDates(dates);
+    onChangeDates(dates);
   };
 
   return (
