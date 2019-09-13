@@ -5,7 +5,7 @@ import TimeLineBar from './TimeLineBar';
 function App() {
   return (
     <div className="App">
-      <TimeLineBar />
+      <TimeLineBar onChangeDates={dates => console.log(dates) }/>
     </div>
   );
 }

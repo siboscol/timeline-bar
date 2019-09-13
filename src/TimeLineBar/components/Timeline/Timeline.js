@@ -52,7 +52,7 @@ const Timeline = (props) => {
   useEffect(() => {
     const dates = getValuesDates(props.selectedDates);
     setValues(dates);
-  }, [props])
+  }, [props]);
 
   const marks = buildMarks(dateTicks);
 
