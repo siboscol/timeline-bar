@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import { subDays, startOfToday, format } from 'date-fns';
-import Timeline from './components';
+import { subDays, addDays, startOfToday, format } from 'date-fns';
+import { Timeline, DatesPicker } from './components';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -25,13 +25,31 @@ const oneWeekAgo = subDays(today, 7);
 const oneYearAgo = subDays(today, 365);
 const twoYearAgo = subDays(today, 2 * 365);
 
+const formatDate = date => {
+  return format(date, 'yyyy-MM-dd');
+};
+
 const TimeLineBar = props => {
   const classes = useStyles();
-
-  const selectedDates = [fourDaysAgo, today];
+  const [selectedDates, setSelectedDates] = useState([oneWeekAgo, today]);
+  const [startDate, setStartDate] = useState(oneYearAgo);
+  const [endDate, setEndDate] = useState(today);
 
   const handleDatesChanged = dates => {
-    console.log('Dates changed', dates);
+    console.log('Timeline changed', dates);
+    setSelectedDates(dates)
+  };
+
+  const handleCalendarChange = dates => {
+    console.log('Calendar changed', dates);
+    const [ calStartDate, calEndDate ] = dates;
+    if (calEndDate >= endDate) {
+        setEndDate(addDays(calEndDate, 30));
+    }
+    if (calStartDate <= startDate) {
+        setStartDate(subDays(calStartDate, 30));
+    }
+    setSelectedDates(dates);
   };
 
   return (
@@ -39,10 +57,14 @@ const TimeLineBar = props => {
       <AppBar color="default" position="fixed" className={classes.bar}>
         <Toolbar>
           <Timeline
-            minDate={oneYearAgo}
-            maxDate={today}
+            minDate={startDate}
+            maxDate={endDate}
             selectedDates={selectedDates}
             onChangeDates={handleDatesChanged}
+          />
+          <DatesPicker
+            selectedDates={selectedDates}
+            onChangeDates={handleCalendarChange}
           />
         </Toolbar>
       </AppBar>
