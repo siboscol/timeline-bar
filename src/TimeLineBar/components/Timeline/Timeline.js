@@ -6,12 +6,16 @@ import { format } from 'date-fns';
 import { scaleTime } from 'd3-scale';
 import ArrowTooltip from './ArrowTooltip';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   root: {
-    margin: 30,
+    marginRight: theme.spacing(4),
     width: '100%'
+  },
+  title: {
+    marginBottom: theme.spacing(1),
+    marginTop: theme.spacing(1)
   }
-});
+}));
 
 // Helpers
 const day = 1000 * 60 * 60 * 24;
@@ -68,7 +72,7 @@ const Timeline = (props) => {
 
   return (
     <div className={classes.root}>
-      <Typography id="range-slider" gutterBottom>
+      <Typography id="range-slider" className={classes.title} align="center">
         Timeline
       </Typography>
       <Slider
