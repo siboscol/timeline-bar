@@ -5,19 +5,18 @@ import Toolbar from '@material-ui/core/Toolbar';
 import { subDays, addDays, startOfToday, format } from 'date-fns';
 import { Timeline, DatesPicker } from './components';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles({
   root: {
     flexGrow: 1,
     color: 'white'
   },
-  grow: {
-    flexGrow: 1
-  },
   bar: {
     top: 'auto',
-    bottom: 0
+    bottom: 0,
+    width: '100%',
+    height: 90
   }
-}));
+});
 
 const today = startOfToday();
 const fourDaysAgo = subDays(today, 4);
@@ -38,23 +37,23 @@ const TimeLineBar = props => {
 
   useEffect(() => {
     onChangeDates(selectedDates);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleDatesChanged = dates => {
     console.log('Timeline changed', dates);
-    setSelectedDates(dates)
+    setSelectedDates(dates);
     onChangeDates(dates);
   };
 
   const handleCalendarChange = dates => {
     console.log('Calendar changed', dates);
-    const [ calStartDate, calEndDate ] = dates;
+    const [calStartDate, calEndDate] = dates;
     if (calEndDate >= endDate) {
-        setEndDate(addDays(calEndDate, 30));
+      setEndDate(addDays(calEndDate, 30));
     }
     if (calStartDate <= startDate) {
-        setStartDate(subDays(calStartDate, 30));
+      setStartDate(subDays(calStartDate, 30));
     }
     setSelectedDates(dates);
     onChangeDates(dates);

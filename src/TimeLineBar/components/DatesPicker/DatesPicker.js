@@ -10,7 +10,8 @@ const useStyles = makeStyles({
   },
   calendar: {
     position: 'absolute',
-    bottom: 100,
+    zIndex: 1200,
+    bottom: 70,
     right: 0
   }
 });
@@ -21,7 +22,7 @@ const formatDate = date => {
 
 const DatesPicker = props => {
   const classes = useStyles();
-  const { selectedDates, onChangeDates } = props;
+  const { selectedDates, onChangeDates, minDate, maxDate } = props;
   const [open, setOpen] = useState(false);
 
   const initialDateRange = {
@@ -59,6 +60,8 @@ const DatesPicker = props => {
       <div className={classes.calendar}>
         <DateRangePicker
           open={open}
+          maxDate={maxDate}
+          minDate={minDate}
           initialDateRange={initialDateRange}
           onChange={handleCalendarChange}
         />
