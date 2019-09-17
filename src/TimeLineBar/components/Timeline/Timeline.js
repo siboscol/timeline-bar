@@ -41,6 +41,12 @@ const getValuesDates = dates => {
   return [dates[0].getTime(), dates[1].getTime()];
 }
 
+const getOnlyDates = dates => {
+  const start = dates[0].setHours(0, 0, 0, 0);
+  const end = dates[1].setHours(0, 0, 0, 0);
+  return [new Date(start), new Date(end)];
+}
+
 const Timeline = (props) => {
   const classes = useStyles();
   const { minDate, maxDate, selectedDates, onChangeDates } = props;
@@ -63,7 +69,8 @@ const Timeline = (props) => {
   const handleChangeCommitted = (event, newValues) => {
     setValues(newValues);
     const newDates = [new Date(newValues[0]), new Date(newValues[1])];
-    onChangeDates(newDates);
+    const onlyDates = getOnlyDates(newDates);
+    onChangeDates(onlyDates);
   }
 
   const handleChangeDates = (event, newValues) => {

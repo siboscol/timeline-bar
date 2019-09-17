@@ -17,7 +17,7 @@ const useStyles = makeStyles({
 });
 
 const formatDate = date => {
-  return format(date, 'yyyy-MM-dd');
+  return format(date, 'dd-MM-yyyy');
 };
 
 const DatesPicker = props => {
@@ -40,7 +40,6 @@ const DatesPicker = props => {
       <TextField
         id="startDate"
         label="Start Date"
-        type="date"
         value={formatDate(selectedDates[0])}
         InputLabelProps={{
           shrink: true
@@ -50,7 +49,6 @@ const DatesPicker = props => {
       <TextField
         id="endDate"
         label="End Date"
-        type="date"
         value={formatDate(selectedDates[1])}
         InputLabelProps={{
           shrink: true
