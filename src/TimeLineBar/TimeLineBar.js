@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import { subDays, addDays, startOfToday, format, isEqual } from 'date-fns';
+import { subDays, startOfToday, format, isEqual } from 'date-fns';
 import { Timeline, DatesPicker } from './components';
 
 const useStyles = makeStyles({
@@ -40,14 +40,14 @@ const TimeLineBar = props => {
   const { onChangeDates } = props;
   const [selectedDates, setSelectedDates] = useState([oneWeekAgo, today]);
   const [startDate, setStartDate] = useState(oneYearAgo);
-  const [endDate, setEndDate] = useState(today);
+  const [endDate] = useState(today);
 
   useEffect(() => {
     onChangeDates(selectedDates);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleDatesChanged = dates => {
+  const handleTimelineChanged = dates => {
     console.log('Timeline changed', dates);
     if( areDatesNotEqual(dates, selectedDates)) {
         setSelectedDates(dates);
@@ -57,11 +57,8 @@ const TimeLineBar = props => {
 
   const handleCalendarChange = dates => {
     console.log('Calendar changed', dates);
-    const [calStartDate, calEndDate] = dates;
+    const calStartDate = dates[0];
     if (areDatesNotEqual(dates, selectedDates)) {
-        if (calEndDate >= endDate) {
-          setEndDate(addDays(calEndDate, 30));
-        }
         if (calStartDate <= startDate) {
           setStartDate(subDays(calStartDate, 30));
         }
@@ -78,7 +75,7 @@ const TimeLineBar = props => {
             minDate={startDate}
             maxDate={endDate}
             selectedDates={selectedDates}
-            onChangeDates={handleDatesChanged}
+            onChangeDates={handleTimelineChanged}
           />
           <DatesPicker
             selectedDates={selectedDates}
